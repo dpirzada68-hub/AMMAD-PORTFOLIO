@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ammad Rajpoot | Professional Video Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        themeDark: '#0a0a0f',
+                        themePurple: '#8a2be2',
+                        themePurpleLight: '#b066ff',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0d0d12;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0d12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6b21a8;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8a2be2;
+        }
+
+        /* Diagonal Stripe Background mimicking the provided template */
+        .diagonal-bg {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            z-index: -1;
+            transform: rotate(-35deg);
+            display: flex;
+            flex-direction: column;
+            gap: 120px;
+            pointer-events: none;
+            opacity: 0.85;
+        }
+        .stripe {
+            width: 100%;
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.4);
+        }
+        .stripe-1 {
+            height: 180px;
+            background: linear-gradient(90deg, #0d0d12 0%, #4c1d95 30%, #7e22ce 50%, #4c1d95 70%, #0d0d12 100%);
+        }
+        .stripe-2 {
+            height: 80px;
+            background: linear-gradient(90deg, #0d0d12 0%, #3b0764 40%, #581c87 50%, #3b0764 60%, #0d0d12 100%);
+            opacity: 0.6;
+        }
+        .stripe-3 {
+            height: 250px;
+            background: linear-gradient(90deg, #0d0d12 0%, #581c87 20%, #9333ea 50%, #581c87 80%, #0d0d12 100%);
+        }
+
+        /* Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .glow-hover:hover {
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.7);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        .profile-img-container {
+            position: relative;
+        }
+        .profile-img-container::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            background: linear-gradient(45deg, #a855f7, #ec4899, #a855f7);
+            border-radius: 20px;
+            z-index: -1;
+            filter: blur(15px);
+            opacity: 0.7;
+            animation: pulseGlow 3s infinite alternate;
+        }
+        
+        @keyframes pulseGlow {
+            0% { opacity: 0.5; filter: blur(10px); }
+            100% { opacity: 0.9; filter: blur(20px); }
+        }
+
+        #loader {
+            position: fixed;
+            inset: 0;
+            background-color: #0a0a0f;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        }
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .clapboard {
+            width: 100px;
+            height: 75px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .clap-base {
+            width: 100%;
+            height: 55px;
+            background: #111;
+            position: absolute;
+            bottom: 0;
+            border: 2px solid #fff;
+            border-radius: 4px;
+        }
+        .clap-stick {
+            width: 100%;
+            height: 18px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: bottom left;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            background: repeating-linear-gradient(45deg, #111, #111 10px, #fff 10px, #fff 20px);
+            animation: clap 1.5s ease-in-out infinite;
+        }
+        @keyframes clap {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-35deg); }
+            40% { transform: rotate(0deg); }
+        }
+        .loader-text {
+            color: #a855f7;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            animation: pulseText 1.5s infinite alternate;
+        }
+        @keyframes pulseText {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-purple-600 selection:text-white">
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="clapboard">
+            <div class="clap-stick"></div>
+            <div class="clap-base"></div>
+        </div>
+        <div class="loader-text">ACTION!</div>
+    </div>
+
+    <!-- Background Decor inspired by image_dee559.png -->
+    <div class="diagonal-bg">
+        <div class="stripe stripe-1"></div>
+        <div class="stripe stripe-2"></div>
+        <div class="stripe stripe-3"></div>
+        <div class="stripe stripe-1 opacity-40"></div>
+    </div>
+    
+    <!-- Dark overlay to ensure text readability -->
+    <div class="fixed inset-0 bg-black/40 z-[-1]"></div>
+
+    <nav class="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-themeDark/60 border-b border-purple-900/30" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="font-heading font-bold text-2xl tracking-wider text-white flex items-center gap-2">
+                <i class="fa-solid fa-film text-themePurpleLight"></i> 
+                AMMAD <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-500">RAJPOOT</span>
+            </a>
+            <div class="hidden md:flex space-x-8 font-medium text-sm tracking-wide">
+                <a href="#home" class="hover:text-themePurpleLight transition-colors">Home</a>
+                <a href="#about" class="hover:text-themePurpleLight transition-colors">About</a>
+                <a href="#services" class="hover:text-themePurpleLight transition-colors">Services</a>
+                <a href="#portfolio" class="hover:text-themePurpleLight transition-colors text-purple-300 font-semibold">Portfolio</a>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-white text-2xl" id="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-themeDark/95 border-b border-purple-900/50 absolute w-full" id="mobile-menu">
+            <div class="flex flex-col items-center py-6 space-y-4">
+                <a href="#home" class="mobile-link text-lg">Home</a>
+                <a href="#about" class="mobile-link text-lg">About</a>
+                <a href="#services" class="mobile-link text-lg">Services</a>
+                <a href="#portfolio" class="mobile-link text-lg text-purple-400">Portfolio</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="min-h-screen flex items-center justify-center pt-20 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto w-full flex flex-col items-center justify-center text-center fade-in-up">
+            
+            <!-- Hero Text -->
+            <p class="text-purple-400 font-semibold tracking-[0.2em] uppercase mb-4 text-sm md:text-base">Creative Professional</p>
+            <h1 class="font-heading text-5xl md:text-7xl font-extrabold leading-tight mb-6 text-white drop-shadow-lg">
+                I Craft <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-500 to-purple-600">Visual Stories</span>
+            </h1>
+            <p class="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+                Hi, I'm Ammad Rajpoot. I transform raw footage into compelling, high-impact narratives that captivate audiences and elevate brands.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center w-full sm:w-auto">
+                <a href="#portfolio" class="bg-gradient-to-r from-purple-700 to-fuchsia-600 text-white px-8 py-4 rounded-full font-semibold text-lg glow-hover flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> View My Work
+                </a>
+                <a href="#contact" class="bg-transparent border-2 border-purple-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-purple-500/20 transition-all duration-300 flex items-center justify-center">
+                    Let's Collaborate
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-24 px-6 relative z-10 bg-black/30 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4">About <span class="text-purple-500">Me</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="fade-in-up">
+                    <h3 class="text-2xl font-semibold mb-6 text-purple-300">The Art of Editing</h3>
+                    <p class="text-gray-300 leading-relaxed mb-6 text-lg">
+                        Video editing is more than just cutting clips together; it's about setting the rhythm, evoking emotion, and ensuring the final product speaks volumes. With a meticulous eye for detail, pacing, and color, I ensure every frame serves a purpose.
+                    </p>
+                    <p class="text-gray-300 leading-relaxed text-lg mb-8">
+                        Whether you need dynamic promotional content, cinematic sequences, YouTube edits, or engaging short-form reels for social media, I have the technical expertise and creative vision to bring your concepts to life. 
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-purple-900/40 p-4 rounded-xl border border-purple-500/30">
+                            <h4 class="text-3xl font-bold text-white mb-1">5+</h4>
+                            <p class="text-sm text-purple-200">Years Experience</p>
+                        </div>
+                        <div class="bg-purple-900/40 p-4 rounded-xl border border-purple-500/30">
+                            <h4 class="text-3xl font-bold text-white mb-1">100+</h4>
+                            <p class="text-sm text-purple-200">Projects Delivered</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 fade-in-up" style="transition-delay: 0.2s;">
+                    <!-- Skill Cards -->
+                    <div class="bg-gray-900/60 p-6 rounded-2xl border border-gray-700 hover:border-purple-500 transition-colors">
+                        <i class="fa-solid fa-scissors text-3xl text-purple-500 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-2">Video Editing</h4>
+                        <p class="text-gray-400 text-sm">Seamless cuts, pacing, and storytelling using Premiere Pro & DaVinci.</p>
+                    </div>
+                    <div class="bg-gray-900/60 p-6 rounded-2xl border border-gray-700 hover:border-purple-500 transition-colors">
+                        <i class="fa-solid fa-palette text-3xl text-purple-500 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-2">Color Grading</h4>
+                        <p class="text-gray-400 text-sm">Enhancing visual mood and consistency across all shots.</p>
+                    </div>
+                    <div class="bg-gray-900/60 p-6 rounded-2xl border border-gray-700 hover:border-purple-500 transition-colors">
+                        <i class="fa-solid fa-wand-magic-sparkles text-3xl text-purple-500 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-2">Motion Graphics</h4>
+                        <p class="text-gray-400 text-sm">Engaging text animations and visual effects with After Effects.</p>
+                    </div>
+                    <div class="bg-gray-900/60 p-6 rounded-2xl border border-gray-700 hover:border-purple-500 transition-colors">
+                        <i class="fa-solid fa-music text-3xl text-purple-500 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-2">Audio Design</h4>
+                        <p class="text-gray-400 text-sm">Crisp sound mixing, SFX, and music synchronization.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="py-24 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4">My <span class="text-purple-500">Portfolio</span></h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 mx-auto rounded-full mb-8"></div>
+                <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+                    Dive into my extensive archive of edited videos. From raw cuts to polished masterpieces, explore the range of styles and projects I've worked on.
+                </p>
+            </div>
+
+            <!-- Playable Videos Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 fade-in-up" style="transition-delay: 0.2s;">
+                
+                <!-- Video Item 1 -->
+                <div class="bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(138,43,226,0.15)] border border-purple-500/20 group">
+                    <div class="relative w-full pb-[56.25%] bg-black"> <!-- 16:9 Aspect Ratio -->
+                        <iframe class="absolute top-0 left-0 w-full h-full" src="https://drive.google.com/file/d/1mBsfF-OOT4c-TZr6RO1hXPELFv2FXOSQ/preview" title="Portfolio Video 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <!-- Video Item 2 -->
+                <div class="bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(138,43,226,0.15)] border border-purple-500/20 group">
+                    <div class="relative w-full pb-[56.25%] bg-black">
+                        <iframe class="absolute top-0 left-0 w-full h-full" src="https://drive.google.com/file/d/1MhyWRsoXFi6CEukRzYLRd6Zl_ugcvmuT/preview" title="Portfolio Video 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <!-- Video Item 3 -->
+                <div class="bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(138,43,226,0.15)] border border-purple-500/20 group">
+                    <div class="relative w-full pb-[56.25%] bg-black">
+                        <iframe class="absolute top-0 left-0 w-full h-full" src="https://drive.google.com/file/d/1ZvMPPG-oH3fjzyDxzUonc0Bskb-JYDIO/preview" title="Portfolio Video 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <!-- Video Item 4 -->
+                <div class="bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(138,43,226,0.15)] border border-purple-500/20 group">
+                    <div class="relative w-full pb-[56.25%] bg-black">
+                        <iframe class="absolute top-0 left-0 w-full h-full" src="https://drive.google.com/file/d/1Mjrr1CWJOdhjShfZsBDG6WERkqQKs3gT/preview" title="Portfolio Video 4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Google Drive Call To Action Card -->
+            <div class="bg-gradient-to-br from-gray-900 via-[#1a0b2e] to-gray-900 p-1 rounded-3xl shadow-2xl fade-in-up">
+                <div class="bg-gray-950/90 backdrop-blur-xl rounded-3xl p-8 md:p-12 text-center border border-purple-500/20 relative overflow-hidden">
+                    
+                    <!-- Decorative background elements inside card -->
+                    <div class="absolute -top-24 -right-24 w-48 h-48 bg-purple-600/30 rounded-full blur-3xl"></div>
+                    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-fuchsia-600/20 rounded-full blur-3xl"></div>
+
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(138,43,226,0.3)]">
+                            <i class="fa-brands fa-google-drive text-4xl text-white"></i>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-bold text-white mb-4">Explore Video Archive</h3>
+                        <p class="text-gray-400 mb-10 max-w-lg mx-auto text-lg">
+                            All my high-quality, full-resolution video projects are securely hosted on Google Drive. Click below to access my complete portfolio folder.
+                        </p>
+                        
+                        <a href="https://drive.google.com/drive/folders/1oVcGRedMglaOP5iSI_R6shO_LB0fhsF1" target="_blank" rel="noopener noreferrer" 
+                           class="group relative inline-flex items-center justify-center px-8 py-5 font-bold text-white transition-all duration-200 bg-purple-600 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-600 glow-hover w-full sm:w-auto text-lg">
+                            <span class="mr-3"><i class="fa-solid fa-folder-open"></i></span>
+                            Open Google Drive Folder
+                            <span class="ml-3 group-hover:translate-x-1 transition-transform duration-200"><i class="fa-solid fa-arrow-right"></i></span>
+                        </a>
+                        
+                        <p class="mt-6 text-sm text-gray-500 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-lock"></i> Safe & Secure Google Drive Link
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="border-t border-purple-900/50 bg-black/60 pt-16 pb-8 relative z-10 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="font-heading text-3xl font-bold mb-6">Let's Create Something <span class="text-purple-400">Amazing</span></h2>
+            <p class="text-gray-400 mb-8 max-w-xl mx-auto">
+                Ready to take your video content to the next level? Reach out and let's discuss your next big project.
+            </p>
+            
+            <div class="flex justify-center space-x-6 mb-12">
+                <a href="https://www.linkedin.com/in/ammad-hassan-395b03324?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-[#0077b5] hover:text-white transition-all duration-300 shadow-lg" title="Connect on LinkedIn">
+                    <i class="fa-brands fa-linkedin-in text-2xl"></i>
+                </a>
+                <a href="https://www.instagram.com/im_ammad_/" target="_blank" rel="noopener noreferrer" class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-[#E1306C] hover:text-white transition-all duration-300 shadow-lg" title="Follow on Instagram">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                </a>
+            </div>
+
+            <!-- Email Address Text -->
+            <div class="mb-12">
+                <a href="mailto:ammadcr123@gmail.com" class="inline-flex items-center gap-3 text-xl md:text-2xl font-medium text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fa-solid fa-envelope text-purple-500"></i> ammadcr123@gmail.com
+                </a>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2026 Ammad Rajpoot. All Rights Reserved.</p>
+                <p class="mt-2 md:mt-0">Designed for Impact.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dismiss loader fast without waiting for heavy external video iframes
+        const dismissLoader = () => {
+            const loader = document.getElementById('loader');
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('hidden');
+            }
+        };
+
+        // Show clapboard animation briefly when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(dismissLoader, 1200);
+        });
+
+        // Hard cap fail-safe timer (max 2 seconds)
+        setTimeout(dismissLoader, 2000);
+
+        const navbar = document.getElementById('navbar');
+        const bg = document.querySelector('.diagonal-bg');
+        
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY;
+            
+            // Parallax scroll for the diagonal background
+            if (bg) {
+                bg.style.transform = `rotate(-35deg) translateY(${scrollPos * 0.25}px)`;
+            }
+
+            if (scrollPos > 50) {
+                navbar.classList.add('shadow-lg', 'bg-themeDark/95');
+                navbar.classList.remove('bg-themeDark/60');
+            } else {
+                navbar.classList.remove('shadow-lg', 'bg-themeDark/95');
+                navbar.classList.add('bg-themeDark/60');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Intersection Observer for scroll animations (fade in up)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Run once
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach((elem) => {
+            observer.observe(elem);
+        });
+    </script>
+</body>
+</html>
